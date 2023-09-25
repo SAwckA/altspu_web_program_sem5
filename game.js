@@ -1,13 +1,22 @@
 import {Person} from "./module.js";
-import {Layout} from "./layout.js";
+import {DefaultLevel} from "./layout_system.js";
+import {MazeLayout} from "./mazeLayout.js";
 
-
-const LAYOUT_SIZE = 61
 
 const KEY_CODE_LEFT = 65
 const KEY_CODE_UP = 87
 const KEY_CODE_RIGHT = 68
 const KEY_CODE_DOWN = 83
+
+
+function getRandomLevel() {
+    const LEVELS = [
+        DefaultLevel,
+        MazeLayout
+    ]
+
+    return LEVELS[Math.floor(Math.random()*LEVELS.length)]
+}
 
 export class Game {
     constructor() {
@@ -16,8 +25,8 @@ export class Game {
     }
 
     startGame() {
-        this.person = new Person([1, 1], LAYOUT_SIZE);
-        this.layout = new Layout(LAYOUT_SIZE, this.complete(), this.person);
+        this.person = new Person([1, 1]);
+        this.layout = new (getRandomLevel())(0, this.complete(), this.person)
         this.GameRootElement = null;
         this.HTMLCovertedLayout = null;
 
