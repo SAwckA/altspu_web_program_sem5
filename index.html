@@ -7,127 +7,14 @@
 </head>
 <body>
     
-    <div class="container" id="main">
+    <div class="container" id="root">
 
     </div>
 
     <script type="module">
-        import { Person, Wall, Empty, Exit} from './module.js';
-        import { Layout } from './layout.js';
-        import { Game } from '/game.js';
+        import {Game} from "./game.js";
 
-        // const KEY_CODE_LEFT = 37
-        // const KEY_CODE_UP = 38
-        // const KEY_CODE_RIGHT = 39
-        // const KEY_CODE_DOWN = 40
-
-        const KEY_CODE_LEFT = 65
-        const KEY_CODE_UP = 87
-        const KEY_CODE_RIGHT = 68
-        const KEY_CODE_DOWN = 83
-
-        class Field {
-            constructor(layout, elementToDraw, person, completedFunc) {
-                this.layout = layout;
-                this.person = person;
-                this.completedFunc = completedFunc;
-                this.convertLayout();
-                this.elementToDraw = elementToDraw;
-            }
-
-            convertLayout() {
-                const cellAssociations = {
-                    0: Empty,
-                    1: Wall,
-                    9: Person,
-                    8: Exit,
-                };
-                for (let i = 0; i < this.layout.length; i++) {
-                    for (let j = 0; j < this.layout.length; j++) {
-                        if (this.person.position[0] == i && this.person.position[1] == j) {
-                            this.layout[i][j] = this.person;
-                            continue;
-                        }
-                        if (this.layout[i][j] == 8) {
-                            this.layout[i][j] = new Exit(this.completedFunc)
-                            continue
-                        }
-                        this.layout[i][j] = new cellAssociations[this.layout[i][j]]
-
-                    }
-                }
-            }
-
-            generateFieldHTML() {
-                let html = '';
-                for (let i = 0; i < this.layout.length; i++) {
-                    html += `<div class="row">`
-                    for (let j = 0; j < this.layout.length; j++) {
-                        html += `<div class="cell" id="${this.layout[i][j].cssID}"></div>`
-                    }
-                    html += `</div>`
-                }  
-                return html
-            }
-
-            drawField() {
-                this.elementToDraw.innerHTML = this.generateFieldHTML()
-            }
-
-            handleKey(e) {
-
-                switch (e.keyCode) {
-                    case KEY_CODE_LEFT:
-                        this.person.moveLeft(this.layout)
-                        break
-
-                    case KEY_CODE_UP:
-                        this.person.moveUp(this.layout)
-                        break
-                            
-                    case KEY_CODE_RIGHT: 
-                        this.person.moveRight(this.layout)
-                        break
-
-                    case KEY_CODE_DOWN:
-                        this.person.moveDown(this.layout)
-                        break
-                    
-                }
-                this.drawField()
-
-                const person = document.getElementById('person')
-                person.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
-                    inline: 'center'
-                })
-                // console.log(person)
-
-                // window.scrollTo(
-                //     {top: person.offsetTop - window.screen.height / 2.5, 
-                //     behavior: 'smooth'}
-                // )
-                // main.scrollTo({ 
-                //     left: person.offsetLeft - window.screen.width / 2.5,
-                //     behavior: 'smooth'
-                // });
-            }
-        }
-
-        const main = document.querySelector('#main')
-
-        let fieldSize = 41
-
-        function restartGame() {
-            fieldSize += 2;
-            let layout = new Layout(fieldSize)
-            let field = new Field(layout.getLayout(), main, new Person([1, 1], fieldSize), restartGame)
-            document.addEventListener('keydown', function(e){field.handleKey(e)});
-            field.drawField()
-        }
-
-        restartGame()
+        let game = new Game()
 
     </script>
 
@@ -169,6 +56,10 @@
 
         #exit {
             background-color: chartreuse;
+        }
+
+        #undefined {
+            background-color: crimson;
         }
     </style>
 </body>
