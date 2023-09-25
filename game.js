@@ -12,7 +12,7 @@ const KEY_CODE_DOWN = 83
 function getRandomLevel() {
     const LEVELS = [
         DefaultLevel,
-        MazeLayout
+        // MazeLayout
     ]
 
     return LEVELS[Math.floor(Math.random()*LEVELS.length)]
@@ -26,11 +26,12 @@ export class Game {
 
     startGame() {
         this.person = new Person([1, 1]);
-        this.layout = new (getRandomLevel())(0, this.complete(), this.person)
+        this.layout = new (getRandomLevel())(0, this.complete(), this.lose(), this.person)
         this.GameRootElement = null;
         this.HTMLCovertedLayout = null;
 
         this.initialDraw()
+        this.timer = setInterval(this.updateObjects(), 500, this.layout.getObjectLayout())
     }
 
     initialDraw() {
@@ -96,14 +97,49 @@ export class Game {
             case KEY_CODE_DOWN:
                 this.person.moveDown(this.layout.getObjectLayout())
                 break
-
         }
         this.updateDraw()
+    }
+
+    updateObjects() {
+        let game = this
+
+        return () => {
+            let layout = game.layout.getObjectLayout()
+            let lockedObjects = [];
+
+            for (let i = 0; i < layout.length; i++){
+                for (let j = 0; j < layout.length; j++) {
+                    let obj = layout[i][j]
+                    let movable = obj.update(layout, i, j)
+                    if (movable) {
+                        obj.lockMove()
+                        lockedObjects.push(obj)
+                    }
+                }
+            }
+
+            lockedObjects.forEach((e) => {
+                e.unlockMove()
+            })
+            game.updateDraw()
+        }
     }
 
     complete() {
         let game = this
         return () => {
+            clearInterval(game.timer)
+            game.startGame()
+
+        }
+    }
+
+    lose() {
+        let game = this
+        return () => {
+            alert('Вы проиграли')
+            clearInterval(game.timer)
             game.startGame()
         }
     }
