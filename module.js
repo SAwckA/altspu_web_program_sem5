@@ -1,7 +1,10 @@
 export class Cell {
     cssID = 'not__implemented'
-    constructor(sprite) {
-        this.sprite = sprite    
+    constructor() {
+    }
+
+    update(layout, posI, posJ) {
+        return false
     }
 }
 
@@ -37,11 +40,12 @@ export class Person extends Cell{
     }
 
     moveLeft(layout){
-        if (this.position[1] == 0) {return}
+        if (this.position[1] === 0) {return}
         let nextCell = layout[this.position[0]][this.position[1]-1]
-        
-        if (nextCell.constructor == Wall) {return}
-        if (nextCell.constructor == Exit) {
+
+        if (nextCell.constructor === Ball) {return}
+        if (nextCell.constructor === Wall) {return}
+        if (nextCell.constructor === Exit) {
             nextCell.enter()
         }
 
@@ -51,11 +55,12 @@ export class Person extends Cell{
 
     }
     moveUp(layout){
-        if (this.position[0] == 0) {return}
+        if (this.position[0] === 0) {return}
         let nextCell = layout[this.position[0]-1][this.position[1]]
 
-        if (nextCell.constructor == Wall) {return}
-        if (nextCell.constructor == Exit) {
+        if (nextCell.constructor === Ball) {return}
+        if (nextCell.constructor === Wall) {return}
+        if (nextCell.constructor === Exit) {
             nextCell.enter()
         }
 
@@ -65,11 +70,12 @@ export class Person extends Cell{
 
     }
     moveRight(layout){
-        if (this.position[1] == this.fieldSize-1) {return}
+        if (this.position[1] === this.fieldSize-1) {return}
         let nextCell = layout[this.position[0]][this.position[1]+1]
-        
-        if (nextCell.constructor == Wall) {return}
-        if (nextCell.constructor == Exit) {
+
+        if (nextCell.constructor === Ball) {return}
+        if (nextCell.constructor === Wall) {return}
+        if (nextCell.constructor === Exit) {
             nextCell.enter()
         }
 
@@ -79,16 +85,65 @@ export class Person extends Cell{
 
     }
     moveDown(layout){
-        if (this.position[0] == this.fieldSize-1) {return}
+        if (this.position[0] === this.fieldSize-1) {return}
         let nextCell = layout[this.position[0]+1][this.position[1]]
 
-        if (nextCell.constructor == Wall) {return}
-        if (nextCell.constructor == Exit) {
+        if (nextCell.constructor === Ball) {return}
+        if (nextCell.constructor === Wall) {return}
+        if (nextCell.constructor === Exit) {
             nextCell.enter()
         }
 
         layout[this.position[0]][this.position[1]] = new Empty()
         this.position[0] += 1    
         layout[this.position[0]][this.position[1]] = this
+    }
+}
+
+export class Dirt extends Cell {
+    cssID = 'dirt'
+}
+
+export class Ball extends Cell {
+    cssID = 'ball'
+
+    constructor(loseFunc) {
+        super();
+        this.loseFunc = loseFunc
+        this.direction = ''
+    }
+
+    lockMove() {
+        this.locked = true
+        return true
+    }
+    unlockMove() {
+        this.locked = false
+        return true
+    }
+
+    update(layout, posI, posJ) {
+        if (this.locked) { return true }
+
+        if (layout[posI + 1][posJ].constructor === Empty) {
+            layout[posI + 1][posJ] = this
+            layout[posI][posJ] = new Empty()
+            this.direction = 'down'
+            return true
+        } else if (layout[posI + 1][posJ].constructor === Person) {
+            this.loseFunc()
+        }
+
+        if (layout[posI][posJ - 1].constructor === Empty && this.direction !== 'right') {
+            layout[posI][posJ - 1] = this
+            layout[posI][posJ] = new Empty()
+            this.direction = 'left'
+        } else if (layout[posI][posJ + 1].constructor === Empty) {
+            if (this.direction === 'left') { return; }
+            layout[posI][posJ + 1] = this
+            layout[posI][posJ] = new Empty()
+            this.direction = 'right'
+        }
+        return true
     }
 }
