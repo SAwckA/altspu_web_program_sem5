@@ -27,10 +27,13 @@ export class Wall extends Cell{
 export class Person extends Cell{
     cssID = 'person'
 
-    constructor(startPosition, fieldSize) {
+    constructor(startPosition) {
         super('')
-        this.fieldSize = fieldSize
         this.position = startPosition
+    }
+
+    setFieldSize(size) {
+        this.fieldSize = size
     }
 
     moveLeft(layout){

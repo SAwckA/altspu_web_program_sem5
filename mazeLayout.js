@@ -1,30 +1,23 @@
 import { HashSet, initTwoDementialArray, shuffleArray } from './util.js';
-import {Empty, Exit, Person, Wall} from "./module.js";
+import {BaseLayout} from "./layout_system.js";
 
 
-// TODO: Генерация/Редактор любого вида для уровня
-// TODO: BaseLayout
-// TODO: Переход в целевую игру
-export class Layout {
+const DEFAULT_LAYOUT_SIZE = 21
+
+export class MazeLayout extends BaseLayout{
     constructor(size, completedFunc, person) {
-        this.completedFunc = completedFunc
-        this.size = size;
-        this.layout = initTwoDementialArray(size, 1);
+        super(DEFAULT_LAYOUT_SIZE, completedFunc, person)
+        this.layout = initTwoDementialArray(this.size, 1);
         this.needConnectPoints = new HashSet();
         this.generateLayout();
         this.placeExit()
-        this.objectLayeout = initTwoDementialArray(size, 0);
-        this.convertLayout()
-        this.objectLayeout[person.position[0]][person.position[1]] = person
-
-    }
-
-    getLayout() {
-        return this.layout;
+        this.objectLayout = initTwoDementialArray(this.size, 0);
+        this.convertNumNotationToObject()
+        this.objectLayout[person.position[0]][person.position[1]] = person
     }
 
     getObjectLayout() {
-        return this.objectLayeout;
+        return this.objectLayout;
     }
 
     placeExit() {
@@ -97,23 +90,4 @@ export class Layout {
         return i > 0 && j > 0 && i < this.size - 1 && j < this.size - 1
     }
 
-    convertLayout() {
-        const cellAssociations = {
-            0: Empty,
-            1: Wall,
-            9: Person,
-            8: Exit,
-        };
-        for (let i = 0; i < this.layout.length; i++) {
-            for (let j = 0; j < this.layout.length; j++) {
-
-                if (this.layout[i][j] === 8) {
-                    this.objectLayeout[i][j] = new Exit(this.completedFunc)
-                    continue
-                }
-                this.objectLayeout[i][j] = new cellAssociations[this.layout[i][j]]
-
-            }
-        }
-    }
 }
