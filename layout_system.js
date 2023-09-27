@@ -1,23 +1,23 @@
 // TODO: Страница с созданием карты (0 и 1 расставлять это ужас, но пока так)
 
-import {Empty, Exit, Person, Wall, Ball, Dirt} from "./module.js";
+import {Empty, Exit, Person, Wall, Ball, Dirt, Score, Enemy} from "./game_objects.js";
 import {initTwoDementialArray} from "./util.js";
 
 
 export class BaseLayout {
-    constructor(size, completedFunc, loseFunc, person) {
+    constructor(size, completedFunc, loseFunc, addPoints, person) {
         this.completedFunc = completedFunc
         this.loseFunc = loseFunc
+        this.addPoints = addPoints
         this.size = size
         this.person = person
-        this.layout = initTwoDementialArray(this.size, 0)
+        this.person = this.layout = initTwoDementialArray(this.size, 0)
     }
 
     init() {
         this.objectLayout = initTwoDementialArray(this.size, 0)
         this.person.setFieldSize(this.objectLayout.length)
         this.convertNumNotationToObject()
-        console.log(this)
     }
 
     getObjectLayout() {
@@ -29,6 +29,8 @@ export class BaseLayout {
             0: Empty,
             1: Wall,
             3: Dirt,
+            4: Score,
+            5: Enemy,
             7: Ball,
             9: Person,
             8: Exit,
@@ -37,15 +39,21 @@ export class BaseLayout {
             for (let j = 0; j < this.layout.length; j++) {
 
                 if (this.layout[i][j] === 8) {
-                    this.objectLayout[i][j] = new Exit(this.completedFunc)
-                    continue
-                }
-                if (this.layout[i][j] === 7) {
-                    this.objectLayout[i][j] = new Ball(this.loseFunc)
-                    continue
+                    this.objectLayout[i][j] = new Exit(this.completedFunc);
+                    continue;
                 }
 
-                this.objectLayout[i][j] = new cellAssociations[this.layout[i][j]]
+                if (this.layout[i][j] === 7) {
+                    this.objectLayout[i][j] = new Ball(this.loseFunc, this.addPoints);
+                    continue;
+                }
+
+                if(this.layout[i][j] === 4) {
+                    this.objectLayout[i][j] = new Score(this.addPoints);
+                    continue;
+                }
+
+                this.objectLayout[i][j] = new cellAssociations[this.layout[i][j]];
 
             }
         }
@@ -54,12 +62,12 @@ export class BaseLayout {
 
 
 export class DefaultLevel extends BaseLayout{
-    constructor(_, completedFunc, loseFunc, person) {
-        super(0, completedFunc, loseFunc, person)
+    constructor(_, completedFunc, loseFunc, addPoints, person) {
+        super(0, completedFunc, loseFunc, addPoints, person)
         this.layout = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
-            [1, 3, 3, 3, 3, 3, 3, 7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
+            [1, 3, 3, 4, 3, 3, 3, 7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 9, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
@@ -67,10 +75,10 @@ export class DefaultLevel extends BaseLayout{
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 1],
+            [1, 3, 3, 3, 7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
-            [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
-            [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
-            [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
+            [1, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
+            [1, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
             [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 7, 3, 3, 3, 3, 3, 1],
@@ -79,6 +87,7 @@ export class DefaultLevel extends BaseLayout{
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         ]
         this.size = this.layout.length
+        this.person = person
         this.person.position[0] = 3
         this.person.position[1] = 1
         this.init()
