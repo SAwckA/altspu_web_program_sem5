@@ -2,9 +2,320 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
+<div class="board">
+    <div class="board__elem">
+        <label for="layout_size">Размер поля: </label>
+        <input oninput="updateLayoutSize(this)" id="layout_size" type="number"/>
+    </div>
+    <div class="board__elem" id="copy" onclick="copyLayout()">
+        Копировать Layout
+    </div>
+</div>
+<div class="object__select">
+    <div class="cell" id="empty" onclick="changePlaceHolder(this, 0)"></div>
+    <div class="cell" id="wall" onclick="changePlaceHolder(this, 1)"></div>
+    <div class="cell" id="dirt" onclick="changePlaceHolder(this, 3)"></div>
+    <div class="cell" id="score" onclick="changePlaceHolder(this, 4)"></div>
+    <div class="cell" id="enemy" onclick="changePlaceHolder(this, 5)"></div>
+    <div class="cell" id="ball" onclick="changePlaceHolder(this, 7)"></div>
+    <div class="cell" id="exit" onclick="changePlaceHolder(this, 8)"></div>
+</div>
+<div class="container" id="root">
 
+</div>
+<script type="module">
+
+    import {Empty, Exit, Person, Wall, Ball, Dirt, Score, Enemy} from "./game_objects.js";
+    import {initTwoDementialArray} from './util.js'
+
+
+    class MapRedactor {
+        constructor() {
+            this.layoutSize = 0
+            this.rootHTML = document.getElementById('root')
+        }
+
+        update() {
+            this.layout = initTwoDementialArray(this.layoutSize, 0)
+            this.updateDraw()
+        }
+
+        initLayout() {
+            let layout = []
+            for (let i = 0; i < this.layoutSize; i++) {
+                layout.push([])
+                for (let j = 0; j < this.layoutSize; j++) {
+                    layout[i].push(0)
+                }
+            }
+
+            this.objectLayout = layout
+            this.layout = layout
+        }
+
+        convertNumNotationToObject() {
+            const cellAssociations = {
+                0: Empty,
+                1: Wall,
+                3: Dirt,
+                4: Score,
+                5: Enemy,
+                7: Ball,
+                9: Person,
+                8: Exit,
+            };
+            for (let i = 0; i < this.layout.length; i++) {
+                for (let j = 0; j < this.layout.length; j++) {
+
+                    if (this.layout[i][j] === 8) {
+                        this.objectLayout[i][j] = new Exit(this.completedFunc);
+                        continue;
+                    }
+
+                    if (this.layout[i][j] === 7) {
+                        this.objectLayout[i][j] = new Ball(this.loseFunc, this.addPoints);
+                        continue;
+                    }
+
+                    if(this.layout[i][j] === 4) {
+                        this.objectLayout[i][j] = new Score(this.addPoints);
+                        continue;
+                    }
+
+                    this.objectLayout[i][j] = new cellAssociations[this.layout[i][j]];
+
+                }
+            }
+        }
+
+        updateDraw() {
+            let layout = this.layout
+
+            let numToGameCSS = {
+                0: 'empty',
+                1: 'wall',
+                3: 'dirt',
+                4: 'score',
+                5: 'enemy',
+                7: 'ball',
+                9: 'person',
+                8: 'exit',
+            };
+
+            this.rootHTML = document.getElementById('root')
+
+            let html = '';
+            for (let i = 0; i < layout.length; i++) {
+                html += `<div class="row">`
+                for (let j = 0; j < layout.length; j++) {
+                    html += `<div onclick="changeElem(this)" i="${i}" j="${j}" class="cell editing" id="${numToGameCSS[layout[i][j]]}"></div>`
+                }
+                html += `</div>`
+            }
+
+            this.rootHTML.innerHTML = html;
+        }
+
+    }
+
+    const mapRedactor = new MapRedactor()
+    window.mapRedactor = mapRedactor
+
+    function updateLayoutSize(e) {
+        console.log(mapRedactor)
+
+        let size = parseInt(e.value)
+        if (isNaN(size)) {
+            return
+        }
+        mapRedactor.layoutSize = parseInt(e.value)
+        mapRedactor.update()
+    }
+
+    var placeHolder = 1
+
+    window.updateLayoutSize = updateLayoutSize
+    // window.placeHolder = placeHolder
+
+    const gameCSSToNum = {
+        'empty': 0,
+        'wall': 1,
+        'dirt': 3,
+        'score': 4,
+        'enemy': 5,
+        'ball': 7,
+        'person': 9,
+        'exit': 8,
+    };
+    const numToGameCSS = {
+        0: 'empty',
+        1: 'wall',
+        3: 'dirt',
+        4: 'score',
+        5: 'enemy',
+        7: 'ball',
+        9: 'person',
+        8: 'exit',
+    };
+
+    function changeElem(e) {
+        let i = parseInt(e.attributes.getNamedItem('i').value)
+        let j = parseInt(e.attributes.getNamedItem('j').value)
+        mapRedactor.layout[i][j] = placeHolder
+        mapRedactor.updateDraw()
+        console.log(mapRedactor.layout)
+
+    }
+    window.changeElem = changeElem
+
+    function changePlaceHolder(e, id) {
+        document.querySelectorAll('.cell').forEach((e) => {
+            e.classList.remove('selected')
+        })
+        placeHolder = id
+        e.classList.add('selected')
+    }
+    window.changePlaceHolder = changePlaceHolder
+
+    function copyLayout(){
+        let text = '['
+        for (let i = 0; i < mapRedactor.layout.length; i++) {
+            if (i === mapRedactor.layout.length-1) {
+                text += `[${mapRedactor.layout[i]}]`
+                break
+            }
+            text += `[${mapRedactor.layout[i]}],`
+        }
+        text += ']'
+        navigator.clipboard.writeText(text)
+    }
+    window.copyLayout = copyLayout
+
+</script>
+
+<style>
+
+    #copy {
+        cursor: pointer;
+    }
+    #copy:active {
+        color: red;
+    }
+    body {
+        background-color: #363636;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+    }
+
+    #root {
+        margin-top: 200px;
+    }
+
+    .object__select {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        width: 100%;
+        position: fixed;
+        margin-top: 60px;
+        padding: 20px;
+        background-color: #363636;
+    }
+
+    .cell.selected {
+        border: 2px red solid;
+    }
+
+    .cell.editing {
+        border: 1px #363636 solid;
+    }
+
+    .board {
+        position: fixed;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+
+        background-color: #363636;
+        color: white;
+
+        width: 100%;
+        height: 50px;
+    }
+
+    .board__elem {
+        font-size: 36px;
+        padding: 0 60px;
+
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    input {
+        font-size: 36px;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        width: min-content;
+        height: min-content;
+    }
+
+    .cell {
+        /* border: 1px solid grey; */
+        width: 50px;
+        height: 50px;
+    }
+
+    #person {
+        background-color: orangered;
+    }
+
+    #wall {
+        background-color: black;
+    }
+
+    #empty {
+        background-color: white;
+    }
+
+    #exit {
+        background-color: chartreuse;
+    }
+
+    #undefined {
+        background-color: crimson;
+    }
+
+    #dirt {
+        background-color: saddlebrown;
+    }
+
+    #ball {
+        background-color: grey;
+    }
+
+    #score {
+        background-color: plum;
+    }
+
+    #enemy {
+        background-color: purple;
+    }
+</style>
 </body>
 </html>

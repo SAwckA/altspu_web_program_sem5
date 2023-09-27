@@ -1,5 +1,5 @@
 import {Person} from "./game_objects.js";
-import {DefaultLevel} from "./layout_system.js";
+import {CustomLayout, DefaultLevel} from "./layout_system.js";
 import {MazeLayout} from "./mazeLayout.js";
 
 
@@ -11,8 +11,9 @@ const KEY_CODE_DOWN = 83
 
 function getRandomLevel() {
     const LEVELS = [
-        DefaultLevel,
+        // DefaultLevel,
         // MazeLayout
+        CustomLayout
     ]
 
     return LEVELS[Math.floor(Math.random()*LEVELS.length)]
