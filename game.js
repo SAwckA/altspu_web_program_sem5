@@ -1,4 +1,4 @@
-import {Person} from "./module.js";
+import {Person} from "./game_objects.js";
 import {DefaultLevel} from "./layout_system.js";
 import {MazeLayout} from "./mazeLayout.js";
 
@@ -22,17 +22,37 @@ export class Game {
     constructor() {
         this.startGame()
         document.addEventListener('keydown', this.addKeyHandler());
+
+        this.scorePoints = 0
     }
 
     startGame() {
-        this.person = new Person([1, 1]);
-        this.layout = new (getRandomLevel())(0, this.complete(), this.lose(), this.person)
+        this.person = new Person([1, 1], this.lose());
+        this.layout = new (getRandomLevel())(
+            0,
+            this.complete(),
+            this.lose(),
+            this.addPoints(),
+            this.person
+        )
         this.GameRootElement = null;
         this.HTMLCovertedLayout = null;
 
         this.initialDraw()
-        this.timer = setInterval(this.updateObjects(), 500, this.layout.getObjectLayout())
+
+        this.scorePointsHTML = document.getElementById('score_points')
+        this.scorePointsHTML.innerHTML = '000'
+        this.updatePointsCounter()
+
+        this.timerHTML = document.getElementById('timer')
+        this.timerHTML.innerHTML = '00:00'
+        this.timer = setInterval(this.updateTimer(), 1000)
+        this.timerValue = 0
+        this.updateTimer()
+
+        this.tick = setInterval(this.updateObjects(), 500, this.layout.getObjectLayout())
     }
+
 
     initialDraw() {
         let layout = this.layout.getObjectLayout()
@@ -126,10 +146,44 @@ export class Game {
         }
     }
 
+    updatePointsCounter() {
+        if (this.scorePoints === undefined) {
+            this.scorePointsHTML.innerHTML = '000'
+            return
+        }
+        this.scorePointsHTML.innerHTML = this.scorePoints
+    }
+
+    updateTimer() {
+        let game = this
+        return () => {
+            game.timerValue += 1
+            if ((game.timerValue % 60) < 10) {
+                game.timerHTML.innerHTML = `0${~~(game.timerValue / 60)}:0${game.timerValue%60}`
+            } else {
+                game.timerHTML.innerHTML = `0${~~(game.timerValue / 60)}:${game.timerValue%60}`
+            }
+        }
+    }
+
+    addPoints() {
+        let game = this
+        return (points) => {
+            console.log(game.scorePoints, points)
+            game.scorePoints += points
+            game.updatePointsCounter()
+        }
+    }
+
+    stopIntervals () {
+        clearInterval(this.timer)
+        clearInterval(this.tick)
+    }
+
     complete() {
         let game = this
         return () => {
-            clearInterval(game.timer)
+            game.stopIntervals()
             game.startGame()
 
         }
@@ -138,8 +192,10 @@ export class Game {
     lose() {
         let game = this
         return () => {
+            game.scorePoints = 0
+            game.updatePointsCounter()
             alert('Вы проиграли')
-            clearInterval(game.timer)
+            game.stopIntervals()
             game.startGame()
         }
     }
