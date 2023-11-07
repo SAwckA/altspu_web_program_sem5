@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="main.css">
+
 </head>
 <body>
 <div class="board">
@@ -14,6 +16,8 @@
     <div class="board__elem" id="copy" onclick="copyLayout()">
         Копировать Layout
     </div>
+    <label for="import">Импортировать layout</label>
+    <textarea id="import" oninput="importLayout(this)"></textarea>
 </div>
 <div class="object__select">
     <div class="cell" id="empty" onclick="changePlaceHolder(this, 0)"></div>
@@ -23,6 +27,7 @@
     <div class="cell" id="enemy" onclick="changePlaceHolder(this, 5)"></div>
     <div class="cell" id="ball" onclick="changePlaceHolder(this, 7)"></div>
     <div class="cell" id="exit" onclick="changePlaceHolder(this, 8)"></div>
+    <div class="cell" id="person" onclick="changePlaceHolder(this, 9)"></div>
 </div>
 <div class="container" id="root">
 
@@ -194,6 +199,17 @@
         navigator.clipboard.writeText(text)
     }
     window.copyLayout = copyLayout
+
+    function importLayout(e) {
+        const value = e.value
+        try {
+            mapRedactor.layout = JSON.parse(value)
+            mapRedactor.updateDraw()
+        } catch  {
+
+        }
+    }
+    window.importLayout = importLayout
 
 </script>
 

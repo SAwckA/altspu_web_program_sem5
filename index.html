@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
     <div class="board">
@@ -24,97 +25,5 @@
         let game = new Game()
 
     </script>
-
-    <style>
-        body {
-            background-color: black;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-            padding: 0;
-        }
-
-        #root {
-            margin-top: 50px;
-        }
-
-        .board {
-            position: fixed;
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-
-            background-color: black;
-            color: white;
-
-            width: 100%;
-
-        }
-
-        .board__elem {
-            font-size: 36px;
-            padding: 0 60px;
-
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-        }
-
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            overflow: auto;
-        }
-
-        .row {
-            display: flex;
-            flex-direction: row;
-            width: min-content;
-            height: min-content;
-        }
-
-        .cell {
-            /* border: 1px solid grey; */
-            width: 50px;
-            height: 50px;
-        }
-
-        #person {
-            background-color: orangered;
-        }
-
-        #wall {
-            background-color: black;
-        }
-
-        #empty {
-            background-color: white;
-        }
-
-        #exit {
-            background-color: chartreuse;
-        }
-
-        #undefined {
-            background-color: crimson;
-        }
-
-        #dirt {
-            background-color: saddlebrown;
-        }
-
-        #ball {
-            background-color: grey;
-        }
-
-        #score {
-            background-color: plum;
-        }
-
-        #enemy {
-            background-color: purple;
-        }
-    </style>
 </body>
 </html>

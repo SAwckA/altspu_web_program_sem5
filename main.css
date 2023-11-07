@@ -1,0 +1,106 @@
+body {
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    margin-top: 50px;
+}
+
+.board {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+
+    background-color: black;
+    color: white;
+
+    width: 100%;
+
+}
+
+.board__elem {
+    font-size: 36px;
+    padding: 0 60px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: min-content;
+    height: min-content;
+}
+
+.cell {
+    /* border: 1px solid grey; */
+    width: 50px;
+    height: 50px;
+}
+
+#person {
+    /*background-color: orangered;*/
+    background-image:  url("/assets/player_down_alpha.gif");
+    background-size: 100%;
+}
+
+#wall {
+    /*background-color: black;*/
+    background-image: url("/assets/wall.jpeg");
+    background-size: 100%;
+}
+
+#empty {
+    background-color: black;
+    /*background-image: url("/assets/dirt.jpg");*/
+    /*background-size: 100%;*/
+    /*opacity: 0.3;*/
+}
+
+#exit {
+    /*background-color: chartreuse;*/
+    background-image: url("/assets/exit.png");
+    background-size: 100%;
+}
+
+#undefined {
+    background-color: crimson;
+}
+
+#dirt {
+    /*background-color: saddlebrown;*/
+    background-image: url("/assets/dirt.jpg");
+    background-size: 100%;
+}
+
+#ball {
+    /*background-color: grey;*/
+    background-image: url("/assets/ball.gif");
+    background-size: 100%;
+}
+
+#score {
+    /*background-color: plum;*/
+    background-image: url("/assets/score.gif");
+    background-size: 100%;
+}
+
+#enemy {
+    /*background-color: purple;*/
+    background-image: url("/assets/butterfly.gif");
+    background-size: 100%;
+}

@@ -51,7 +51,7 @@ export class Game {
         this.timerValue = 0
         this.updateTimer()
 
-        this.tick = setInterval(this.updateObjects(), 500, this.layout.getObjectLayout())
+        this.tick = setInterval(this.updateObjects(), 200, this.layout.getObjectLayout())
     }
 
 
