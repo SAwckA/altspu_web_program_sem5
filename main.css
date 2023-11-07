@@ -54,13 +54,13 @@ body {
 
 #person {
     /*background-color: orangered;*/
-    background-image:  url("player_down_alpha.gif");
+    background-image:  url("altspu_web_program_sem5/player_down_alpha.gif");
     background-size: 100%;
 }
 
 #wall {
     /*background-color: black;*/
-    background-image: url("wall.jpeg");
+    background-image: url("altspu_web_program_sem5/wall.jpeg");
     background-size: 100%;
 }
 
@@ -73,7 +73,7 @@ body {
 
 #exit {
     /*background-color: chartreuse;*/
-    background-image: url("exit.png");
+    background-image: url("altspu_web_program_sem5/exit.png");
     background-size: 100%;
 }
 
@@ -83,24 +83,24 @@ body {
 
 #dirt {
     /*background-color: saddlebrown;*/
-    background-image: url("dirt.jpg");
+    background-image: url("altspu_web_program_sem5/dirt.jpg");
     background-size: 100%;
 }
 
 #ball {
     /*background-color: grey;*/
-    background-image: url("ball.gif");
+    background-image: url("altspu_web_program_sem5/ball.gif");
     background-size: 100%;
 }
 
 #score {
     /*background-color: plum;*/
-    background-image: url("score.gif");
+    background-image: url("altspu_web_program_sem5/score.gif");
     background-size: 100%;
 }
 
 #enemy {
     /*background-color: purple;*/
-    background-image: url("butterfly.gif");
+    background-image: url("altspu_web_program_sem5/butterfly.gif");
     background-size: 100%;
 }
